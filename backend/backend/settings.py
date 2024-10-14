@@ -61,7 +61,7 @@ SECRET_KEY = 'django-insecure-oal^b9s^g5uv&#y(_jxi5)#mmwfk&k$r21$!s04wurgwc@*#5u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['139.180.209.110', '127.0.0.1', 'localhost','172.30.1.16','127.0.0.1','124.216.166.162']
 
 
 # Application definition
@@ -76,6 +76,9 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'rest_framework',
     'corsheaders',
+    'cash',
+    'printer',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
@@ -108,7 +111,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
-
+DATA_UPLOAD_MAX_MEMORY_SIZE = 2621440000  
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
