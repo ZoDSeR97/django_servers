@@ -25,6 +25,8 @@ BACKEND_ENV = os.getenv('ENVIRONMENT')
 
 # URI
 DEV_URL = os.getenv('DEVELOPMENT_URL')
+DOMAIN_URL = os.getenv('DOMAIN_URL')
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 
 # API
 API_CASH_READER = os.getenv('API_CASH_READER')
@@ -48,6 +50,12 @@ cloudinary.config(
     api_secret=CLOUDINARY_SECRET_KEY,    
 )
 
+# QPAY
+QPAY_AUTH_URL=os.getenv('QPAY_AUTH_URL')
+QPAY_INVO_URL=os.getenv('QPAY_INVO_URL')
+QPAY_USERNAME=os.getenv('QPAY_USERNAME')
+QPAY_PASSWORD=os.getenv('QPAY_PASSWORD')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -56,12 +64,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-oal^b9s^g5uv&#y(_jxi5)#mmwfk&k$r21$!s04wurgwc@*#5u'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['139.180.209.110', '127.0.0.1', 'localhost','172.30.1.16','127.0.0.1','124.216.166.162']
+ALLOWED_HOSTS = ['139.180.209.110', '127.0.0.1', 'localhost','124.216.166.162', '172.30.160.1']
 
 
 # Application definition
@@ -73,11 +81,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize',
     'rest_framework',
-    'corsheaders',
-    'cash',
-    'printer',
+    'stores',
+    'devices',
+    'frames',
+    'backgrounds',
+    'revenues',
     'django_cleanup.apps.CleanupConfig',
 ]
 
@@ -89,7 +98,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -111,6 +120,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
 DATA_UPLOAD_MAX_MEMORY_SIZE = 2621440000  
 
 # Database
@@ -121,6 +131,17 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'photomong_photobooth',
+    #     'USER': os.getenv('MYSQL_USERNAME'),
+    #     'PASSWORD': os.getenv('MYSQL_PASSWORD'),
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',    
+    #     'OPTIONS': {
+    #         'sql_mode': 'traditional',
+    #     }
+    # }
 }
 
 
@@ -169,9 +190,15 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 LOGIN_URL = '/account/login'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5000"
+]

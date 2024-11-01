@@ -16,15 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from cash import urls as cash_urls
-from printer import urls as printer_urls
+from stores import urls as store_urls
+from devices import urls as device_urls
+from frames import urls as frame_urls
+from backgrounds import urls as background_urls
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('cash/', include(cash_urls)),
-    path('printer/', include(printer_urls)),
+    path('stores/', include(store_urls)),
+    path('devices/', include(device_urls)),
+    path('frames/', include(frame_urls)),
+    path('backgrounds/', include(background_urls)),
 ]
 
 if settings.DEBUG:
