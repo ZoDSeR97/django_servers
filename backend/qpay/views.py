@@ -5,9 +5,8 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from time import time
 from datetime import datetime
-from revenue.models import Transaction, Order
-from device.models import Device
-from payment.models import Payment
+from revenues.models import Transactions
+from devices.models import Device
 from django.conf import settings
 import json, hmac, hashlib, urllib.request, urllib, urllib.parse, random
 import requests
@@ -132,34 +131,19 @@ class QPayAPI(APIView):
             
             if result.get("rows"):
                 if result["rows"][0]["payment_status"] == "PAID":
-                    order.status = "Success"
-                    order.save()
-
-            # Create Transaction if Success
-            if (order.status == 'Success'):
-                Transaction.objects.create(
-                    order_id=order,
-                    payment_id=Payment.objects.filter(code='qpay').first(),
-                    amount=order.total_price,
-                    transaction_status="Success",
-                )
-
-            return Response({
-                    "invoice_id": result.get["invoice_id"],
-                    "qr_code": result.get("qr_text"),
-                    "payment_url": result.get("invoice_url"),
-                    "status": "success",
-                    "order_id": order_code,
-                }, status=status.HTTP_200_OK)
+                    return Response({
+                            "status": "PAID",
+                            "amount": result["paid_amount"]
+                        }, status=status.HTTP_200_OK)
         else:
             return Response({
-                "error": "Failed to create invoice",
+                "error": "Failed to request info",
                 "details": invoice_response.text
             }, status=invoice_response.status_code)
 
         return Response({
-            "SUCCESS"
-        }, status=status.HTTP_200_OK)
+            "status": "NOT PAID"
+        }, status=status.HTTP_402_PAYMENT_REQUIRED)
 
 class QPayUpdateAPI(APIView):
     def post(self, request, order_code, *args, **kwargs):
@@ -178,10 +162,9 @@ class QPayUpdateAPI(APIView):
 class QPayWebhookAPI(APIView):
     def get(self, request, *args, **kwargs):
         # Handle webhook notifications from QPay
-        order_code = request.GET.get("order")
-        invoice_id = request.GET.get("invoice_id")
+        invoice_id = request.GET.get("payment_id")
 
-        if not order_code or not invoice_id:
+        if not invoice_id:
             return Response({"error": "Missing info"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Implement logic to check order status and update database
@@ -220,17 +203,12 @@ class QPayWebhookAPI(APIView):
             
             if result.get("rows"):
                 if result["rows"][0]["payment_status"] == "PAID":
-                    order.status = "Success"
-                    order.save()
-
-            # Create Transaction if Success
-            if (order.status == 'Success'):
-                Transaction.objects.create(
-                    order_id=order,
-                    payment_id=Payment.objects.filter(code='qpay').first(),
-                    amount=order.total_price,
-                    transaction_status="Success",
-                )
+                    Transactions.objects.create(
+                        order_id=order,
+                        payment_id=Payment.objects.filter(code='qpay').first(),
+                        amount=order.total_price,
+                        transaction_status="Success",
+                    )
 
             return Response({
                     "invoice_id": result.get["invoice_id"],
