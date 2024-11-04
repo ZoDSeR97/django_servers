@@ -2,28 +2,15 @@ from django.db import models
 from devices.models import Device
 
 # Create your models here.
-class Order(models.Model):
-    order_code = models.CharField(max_length=100)
+class Transactions(models.Model):
     device_id = models.ForeignKey(Device, on_delete=models.CASCADE)
-    product_price = models.FloatField()
-    base_price = models.FloatField()
-    tax = models.FloatField()
-    total_price = models.FloatField()
-    status = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    photo_url_done = models.TextField(default='')
-
-    def __str__(self):
-        return f"Order #{self.order_code} with {self.total_price}"
-    
-class Transaction(models.Model):
-    order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
-    payment_id = models.ForeignKey(Payment, on_delete=models.CASCADE)
+    payment_id = method = models.CharField(max_length=100)
     amount = models.FloatField()
-    transaction_status = models.CharField(max_length=100)
+    method = models.CharField(max_length=100)
+    status = models.CharField(max_length=100)
+    photo_url_done = models.TextField(default='')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Transaction total {self.amount} for order ${self.order_id.order_code}"
+        return f"Transaction #{self.payment_id} from {self.device_id} through {self.method}"

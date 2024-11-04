@@ -28,15 +28,6 @@ DEV_URL = os.getenv('DEVELOPMENT_URL')
 DOMAIN_URL = os.getenv('DOMAIN_URL')
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 
-# API
-API_CASH_READER = os.getenv('API_CASH_READER')
-API_PRINTER_2 = os.getenv('API_PRINTER_2')
-API_PRINTER_3 = os.getenv('API_PRINTER_3')
-API_PRINTER_4 = os.getenv('API_PRINTER_4')
-API_PRINTER_5 = os.getenv('API_PRINTER_5')
-API_PRINTER_6 = os.getenv('API_PRINTER_6')
-API_PRINTER_CUT = os.getenv('API_PRINTER_CUT')
-
 # Cloudinary
 CLOUDINARY_NAME = os.getenv('CLOUDINARY_NAME')
 CLOUDINARY_API_KEY = os.getenv('CLOUDINARY_API_KEY')
@@ -82,11 +73,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'accounts',
+    'dashboards',
     'stores',
     'devices',
     'frames',
     'backgrounds',
     'revenues',
+    'cash',
+    'qpay',
     'django_cleanup.apps.CleanupConfig',
 ]
 

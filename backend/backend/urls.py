@@ -20,6 +20,8 @@ from stores import urls as store_urls
 from devices import urls as device_urls
 from frames import urls as frame_urls
 from backgrounds import urls as background_urls
+from cash import urls as cash_urls
+from qpay import urls as qpay_urls
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -29,6 +31,8 @@ urlpatterns = [
     path('devices/', include(device_urls)),
     path('frames/', include(frame_urls)),
     path('backgrounds/', include(background_urls)),
+    path('cash/', include(cash_urls)),
+    path('qpay/', include(qpay_urls)),
 ]
 
 if settings.DEBUG:
